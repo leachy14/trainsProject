@@ -17,7 +17,10 @@ public class Client {
     public static int passengerOnTrains = 0;
     public static int passengersDelivered;
 
-
+    /**
+     * Method to create stations
+     * @param stations
+     */
     public void createStations(ArrayList<Station> stations) {
         // i'll create 5 stations
         for (int i = 0; i < NUM_STATIONS; i++) {
@@ -77,7 +80,14 @@ public class Client {
             passengerQueue.enqueue(passenger);
         } // end loop
     } // end createPassengers
-
+    /**
+     * Method to move trains, currently the method start to works but stops at time 6 because the stations go out of index
+     * Expected behaviour would never have the index increase that much
+     * @param stations
+     * @param trainQueue
+     * @param time
+     * @return passengersOnTrains
+     */
     public int moveTrains(ArrayList<Station> stations, QueueInterface<Train> trainQueue, int time) {
         //store trainCount variable in local variable for numTrains
         int numTrains = trainCount;
@@ -85,6 +95,7 @@ public class Client {
         for (int i = 0; i < numTrains; i++) {
             //get a train from the queue
             Train train = trainQueue.getFront();
+            //print out the train retrieved
             //move the train
             train.move();
             System.out.println("Train " + i + " has moved to station " + train.nextStation());
@@ -92,7 +103,7 @@ public class Client {
             int timeToNext = train.timeToNext();
             System.out.println("Time to next station: " + timeToNext);
             //check to see if train is at a station
-            if (timeToNext <= 0) {
+            if (timeToNext == 0) {
                 //get current station number
                 int currentStation = train.nextStation();
                 //get station from list of stations
@@ -106,6 +117,7 @@ public class Client {
                 passengersDelivered += leavingPassengers;
                 System.out.println("Passengers delivered: " + passengersDelivered);
                 //update station
+                timeToNext = station.getTimeToNextStation();
                 train.updateStation(timeToNext);
                 //check to see if train is at the last station
                 if (currentStation == NUM_STATIONS - 1) {
