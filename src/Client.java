@@ -15,7 +15,7 @@ public class Client {
     public static final int TIME_INTERVAL = 200;
     public static int trainCount = 0;
     public static int passengerOnTrains = 0;
-    public static int passengersDelivered = 0;
+    public static int passengersDelivered;
 
 
     public void createStations(ArrayList<Station> stations) {
@@ -41,6 +41,8 @@ public class Client {
             trainQueue.enqueue(train);
             //count up traincount
             trainCount++;
+            //output train has been created
+            System.out.println("Train " + trainCount + " has been created");
         }
     } //end startNewTrain
 
@@ -54,11 +56,18 @@ public class Client {
             int stopStation = 0;
             //generate random start station
             startStation = generator.nextInt(NUM_STATIONS);
+            System.out.println("Passenger " + i + " has been created at station " + startStation);
             //generate random stop station
             stopStation = generator.nextInt(NUM_STATIONS);
-            //loop until stop station is not equal to start station
-            while (stopStation == startStation) {
-                stopStation = generator.nextInt(NUM_STATIONS);
+            //loop until start station is less than stop station, if not already
+            if (startStation >= stopStation) {
+                for (int j = 0; j < NUM_STATIONS; j++) {
+                    if (startStation < stopStation) {
+                        break;
+                    } else {
+                        stopStation = generator.nextInt(NUM_STATIONS);
+                    }
+                }
             }
             //create passenger
             Passenger passenger = new Passenger(startStation, stopStation);
@@ -69,7 +78,7 @@ public class Client {
         } // end loop
     } // end createPassengers
 
-    public void moveTrains(ArrayList<Station> stations, QueueInterface<Train> trainQueue, QueueInterface<Passenger> passengerQueue) {
+    public int moveTrains(ArrayList<Station> stations, QueueInterface<Train> trainQueue, int time) {
         //store trainCount variable in local variable for numTrains
         int numTrains = trainCount;
         //loop through number of trains
@@ -78,10 +87,12 @@ public class Client {
             Train train = trainQueue.getFront();
             //move the train
             train.move();
+            System.out.println("Train " + i + " has moved to station " + train.nextStation());
             //get time to next station
             int timeToNext = train.timeToNext();
+            System.out.println("Time to next station: " + timeToNext);
             //check to see if train is at a station
-            if (timeToNext == 0) {
+            if (timeToNext <= 0) {
                 //get current station number
                 int currentStation = train.nextStation();
                 //get station from list of stations
@@ -89,10 +100,11 @@ public class Client {
                 // unload passengers to station
                 int leavingPassengers = train.unloadPassengers(currentStation);
                 // load passengers from station
-                int addedPassengers = train.loadPassengers(station, TIME_INTERVAL); //unsure if this is correct
+                int addedPassengers = train.loadPassengers(station, time);
                 //update passengers on trains
                 passengerOnTrains += addedPassengers;
                 passengersDelivered += leavingPassengers;
+                System.out.println("Passengers delivered: " + passengersDelivered);
                 //update station
                 train.updateStation(timeToNext);
                 //check to see if train is at the last station
@@ -106,7 +118,8 @@ public class Client {
                     trainQueue.enqueue(train);
                 }
             } // end if
-        } // end for loop
+        }// end for loop
+        return passengerOnTrains;
     } // end moveTrains
 
 

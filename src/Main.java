@@ -35,7 +35,7 @@ public class Main {
             //call method to create new passenger
             sim.createPassengers(stations, passengerQueue);
             //call method to move trains
-            sim.moveTrains(stations, trainQueue, passengerQueue);
+            numPassengers = sim.moveTrains(stations, trainQueue, i);
         } // end for loop;
         Client.finalReport(Client.TIME_INTERVAL, Client.passengersDelivered, passengerQueue);
     }
