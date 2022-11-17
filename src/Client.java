@@ -16,6 +16,7 @@ public class Client {
     public static int trainCount = 0;
     public static int passengerOnTrains = 0;
     public static int passengersDelivered;
+    public static int passengersWaiting = 0;
 
     /**
      * Method to create stations
@@ -83,9 +84,9 @@ public class Client {
     /**
      * Method to move trains, currently the method start to works but stops at time 6 because the stations go out of index
      * Expected behaviour would never have the index increase that much
-     * @param stations
-     * @param trainQueue
-     * @param time
+     * @param stations the arraylist of stations we are going to modify
+     * @param trainQueue The queue of trains
+     * @param time The current cyle of the simulation
      * @return passengersOnTrains
      */
     public int moveTrains(ArrayList<Station> stations, QueueInterface<Train> trainQueue, int time) {
@@ -94,11 +95,11 @@ public class Client {
         //loop through number of trains
         for (int i = 0; i < numTrains; i++) {
             //get a train from the queue
-            Train train = trainQueue.getFront();
+            Train train = trainQueue.dequeue();
             //print out the train retrieved
             //move the train
             train.move();
-            System.out.println("Train " + i + " has moved to station " + train.nextStation());
+            System.out.println("Train " + train + " has moved to station " + train.nextStation());
             //get time to next station
             int timeToNext = train.timeToNext();
             System.out.println("Time to next station: " + timeToNext);
@@ -120,16 +121,13 @@ public class Client {
                 timeToNext = station.getTimeToNextStation();
                 train.updateStation(timeToNext);
                 //check to see if train is at the last station
-                if (currentStation == NUM_STATIONS - 1) {
-                    //remove train from queue
-                    trainQueue.dequeue();
-                    //output train has been removed
-                    System.out.println("Train " + i + " has been removed.");
-                } else {
-                    //add train back to queue
-                    trainQueue.enqueue(train);
-                }
             } // end if
+            if (train.nextStation() < NUM_STATIONS) {
+                //add train back to queue
+                trainQueue.enqueue(train);
+            } else {
+                trainCount--;
+            }
         }// end for loop
         return passengerOnTrains;
     } // end moveTrains

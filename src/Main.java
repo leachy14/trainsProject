@@ -16,7 +16,7 @@ public class Main {
     // variables for number of passengers
     private static int numPassengers = 0;
     // variables for passengers waiting
-    static int passengersWaiting = 0;
+    private static int passengersWaiting = 0;
     // call method to create stations
 
     public static void main(String[] args) {
@@ -31,7 +31,7 @@ public class Main {
             System.out.println("Time: " + i);
             System.out.println("Passengers on trains: " + Client.passengerOnTrains);
             //call method to start new train
-            sim.startNewTrain(trainQueue, i);
+            sim.startNewTrain(trainQueue, i - 1);
             //call method to create new passenger
             sim.createPassengers(stations, passengerQueue);
             //call method to move trains
