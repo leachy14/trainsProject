@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Random;
-
 /**
  * Client program to handle the train simulation functions
  * @author Christopher Leach
@@ -20,7 +19,7 @@ public class Client {
 
     /**
      * Method to create stations
-     * @param stations
+     * @param stations list to be modified
      */
     public void createStations(ArrayList<Station> stations) {
         // i'll create 5 stations
@@ -36,6 +35,12 @@ public class Client {
         }
     } // end createStations
 
+    /**
+     * Method to create a new train, only creates a train when the time interval and train interval are
+     * divisible without a remainder
+     * @param trainQueue queue of trains to be modified
+     * @param time current tick of the simulation
+     */
     public void startNewTrain(QueueInterface<Train> trainQueue, int time) {
         //check to ensure if time is divisible by train interval
         if (time % TRAIN_INTERVAL == 0) {
@@ -50,6 +55,11 @@ public class Client {
         }
     } //end startNewTrain
 
+    /**
+     * Method to generate new passengers and assign start and stop stations
+     * @param stations queue of stations
+     * @param passengerQueue queue of passengers
+     */
     public void createPassengers(ArrayList<Station> stations, QueueInterface<Passenger> passengerQueue) {
         //generate a random number between 0-5 to determine how many passengers to create
         int numPassengers = generator.nextInt(6);
@@ -81,13 +91,14 @@ public class Client {
             passengerQueue.enqueue(passenger);
         } // end loop
     } // end createPassengers
+
     /**
-     * Method to move trains, currently the method start to works but stops at time 6 because the stations go out of index
-     * Expected behaviour would never have the index increase that much
-     * @param stations the arraylist of stations we are going to modify
-     * @param trainQueue The queue of trains
-     * @param time The current cyle of the simulation
-     * @return passengersOnTrains
+     * Method to move the trains and passengers through the stations
+     * Method will add the train back to the queue unless it is at the last station
+     * @param stations list of stations
+     * @param trainQueue queue of trains
+     * @param time current tick of the simulation
+     * @return number of passengers on trains
      */
     public int moveTrains(ArrayList<Station> stations, QueueInterface<Train> trainQueue, int time) {
         //store trainCount variable in local variable for numTrains
@@ -96,10 +107,8 @@ public class Client {
         for (int i = 0; i < numTrains; i++) {
             //get a train from the queue
             Train train = trainQueue.dequeue();
-            //print out the train retrieved
             //move the train
             train.move();
-            System.out.println("Train " + train + " has moved to station " + train.nextStation());
             //get time to next station
             int timeToNext = train.timeToNext();
             System.out.println("Time to next station: " + timeToNext);

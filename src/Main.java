@@ -1,12 +1,10 @@
-import java.util.*;
+import java.util.ArrayList;
 /**
  * Main class for the program where execution will be run
  * @author Christopher Leach
  * @version 0.1
  */
-// under construction
 public class Main {
-    // TO ADD:
     // Create a list for stations
     private static ArrayList<Station> stations = new ArrayList<Station>();
     // Create a queue for trains
@@ -19,6 +17,11 @@ public class Main {
     private static int passengersWaiting = 0;
     // call method to create stations
 
+    /**
+     * Main method, client is where the simulation methods are contained
+     * and the main method just calls them
+     * @param args
+     */
     public static void main(String[] args) {
         //create client object
         Client sim = new Client();
